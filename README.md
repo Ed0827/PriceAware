@@ -4,7 +4,7 @@ PriceAware+ is a medical procedure suggestion application that helps patients ma
 
 ## Features
 
-- **Symptom Analysis**: The application analyzes user-reported symptoms using a combination of vector search (Qdrant) and text search (Supabase) to find relevant medical procedures.
+- **Symptom Analysis**: The application analyzes user-reported symptoms using a combination of vector search (Pinecone) and text search (Supabase) to find relevant medical procedures.
 - **Procedure Suggestions**: Based on the symptom analysis, the application suggests appropriate medical procedures with detailed information.
 - **Cost Information**: For each suggested procedure, the application provides cost ranges, deductible amounts, and insurance coverage information.
 - **Alternative Options**: The application suggests alternative procedures that might be relevant to the user's symptoms.
@@ -15,8 +15,9 @@ PriceAware+ is a medical procedure suggestion application that helps patients ma
 - **Frontend**: Next.js, React, TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes
 - **Database**: Supabase (PostgreSQL)
-- **Vector Search**: Qdrant
+- **Vector Search**: Pinecone for semantic search
 - **AI/ML**: OpenAI API for embeddings and chat responses
+- **Storage**: Cloudflare R2 for Parquet file storage
 
 ## Getting Started
 
@@ -25,7 +26,7 @@ PriceAware+ is a medical procedure suggestion application that helps patients ma
 - Node.js (v18 or later)
 - npm or yarn
 - Supabase account
-- Qdrant account
+- Pinecone account
 - OpenAI API key
 - Cloudflare R2 account (for Parquet file storage)
 - Google Maps API key (optional)
@@ -42,9 +43,10 @@ PriceAware+ is a medical procedure suggestion application that helps patients ma
    # OpenAI API Key
    OPENAI_API_KEY=your_openai_api_key_here
 
-   # Qdrant API Key and URL
-   QDRANT_API_KEY=your_qdrant_api_key_here
-   QDRANT_URL=your_qdrant_url_here
+   # Pinecone
+   PINECONE_API_KEY=your_pinecone_api_key_here
+   PINECONE_INDEX_NAME=your_pinecone_index_name_here
+   PINECONE_SERVER_URL=your_pinecone_server_url_here
 
    # Cloudflare R2 credentials (for Parquet file storage)
    CLOUDFLARE_ACCOUNT_ID=your_cloudflare_account_id_here
@@ -55,11 +57,6 @@ PriceAware+ is a medical procedure suggestion application that helps patients ma
    # Supabase credentials
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-
-   # Pinecone
-   PINECONE_API_KEY=your_pinecone_api_key_here
-   PINECONE_INDEX_NAME=your_pinecone_index_name_here
-   PINECONE_SERVER_URL=your_pinecone_server_url_here
 
    # Google Maps (optional)
    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
@@ -96,18 +93,18 @@ PriceAware+ is a medical procedure suggestion application that helps patients ma
 
 ## How It Works
 
-### Symptom Analysis with OpenAI and Qdrant
+### Symptom Analysis with OpenAI and Pinecone
 
 When a user enters their symptoms (e.g., "I have fever"), the application:
 
 1. **Generates Embeddings**: Uses OpenAI's embedding API to convert the symptoms into a vector representation.
-2. **Vector Search**: Queries the Qdrant vector database to find similar symptoms and associated procedures.
+2. **Vector Search**: Queries the Pinecone vector database to find similar symptoms and associated procedures.
 3. **Fallback Mechanism**: If vector search doesn't return results, falls back to text search in Supabase.
 4. **Personalized Response**: Uses OpenAI to generate a personalized explanation of why the suggested procedures might be relevant.
 
 ### Vector Database Setup
 
-The application uses Qdrant as a vector database to store embeddings of procedure descriptions. This enables semantic search, which is more powerful than traditional keyword search.
+The application uses Pinecone as a vector database to store embeddings of procedure descriptions. This enables semantic search, which is more powerful than traditional keyword search.
 
 To populate the vector database with procedure data:
 
@@ -118,7 +115,7 @@ npm run populate-vector-db
 This script:
 1. Fetches procedures from Supabase
 2. Generates embeddings for each procedure description using OpenAI
-3. Stores the embeddings in Qdrant along with procedure IDs
+3. Stores the embeddings in Pinecone along with procedure IDs
 
 ## Project Structure
 
